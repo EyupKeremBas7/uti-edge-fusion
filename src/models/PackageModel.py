@@ -1,11 +1,9 @@
-
 from pydantic import Field, validator
 from typing import List, Optional, Union, Literal
 from sdks.novavision.src.base.model import Package, Image, Inputs, Configs, Outputs, Response, Request, Output, Input, Config
 
-
-class InputImage(Input):
-    name: Literal["inputImage"] = "inputImage"
+class InputImageOne(Input):
+    name: Literal["inputImageOne"] = "inputImageOne"
     value: Union[List[Image], Image]
     type: str = "object"
 
@@ -20,9 +18,40 @@ class InputImage(Input):
     class Config:
         title = "Image"
 
+class InputImageTwo(Input):
+    name: Literal["inputImageTwo"] = "inputImageTwo"
+    value: Union[List[Image], Image]
+    type: str = "object"
 
-class OutputImage(Output):
-    name: Literal["outputImage"] = "outputImage"
+    @validator("type", pre=True, always=True)
+    def set_type_based_on_value(cls, value, values):
+        value = values.get('value')
+        if isinstance(value, Image):
+            return "object"
+        elif isinstance(value, list):
+            return "list"
+
+    class Config:
+        title = "Image"
+
+class OutputImageOne(Output):
+    name: Literal["outputImageOne"] = "outputImageOne"
+    value: Union[List[Image],Image]
+    type: str = "object"
+
+    @validator("type", pre=True, always=True)
+    def set_type_based_on_value(cls, value, values):
+        value = values.get('value')
+        if isinstance(value, Image):
+            return "object"
+        elif isinstance(value, list):
+            return "list"
+
+    class Config:
+        title = "Image"
+
+class OutputImageTwo(Output):
+    name: Literal["outputImageTwo"] = "outputImageTwo"
     value: Union[List[Image],Image]
     type: str = "object"
 
@@ -38,69 +67,110 @@ class OutputImage(Output):
         title = "Image"
 
 
-class KeepSideFalse(Config):
-    name: Literal["False"] = "False"
-    value: Literal[False] = False
-    type: Literal["bool"] = "bool"
+class VerticalFusion(Config):
+    name: Literal["VerticalFusion"] = "VerticalFusion"
+    value: Literal["VerticalFusion"] = "VerticalFusion"
+    type: Literal["string"] = "string"
     field: Literal["option"] = "option"
-
     class Config:
-        title = "Disable"
+        title = "Vertical"
 
-
-class KeepSideTrue(Config):
-    name: Literal["True"] = "True"
-    value: Literal[True] = True
-    type: Literal["bool"] = "bool"
+class HorizontalFusion(Config):
+    name: Literal["HorizontalFusion"] = "HorizontalFusion"
+    value: Literal["HorizontalFusion"] = "HorizontalFusion"
+    type: Literal["string"] = "string"
     field: Literal["option"] = "option"
-
     class Config:
-        title = "Enable"
+        title = "Horizontal"
 
-
-class KeepSideBBox(Config):
+class ConfigFusionDirection(Config):
     """
-        Rotate image without catting off sides.
+        Determines the orientation for fusing the two images.
     """
-    name: Literal["KeepSide"] = "KeepSide"
-    value: Union[KeepSideTrue, KeepSideFalse]
+    name: Literal["FusionDirection"] = "FusionDirection"
+    value: Union[VerticalFusion, HorizontalFusion]
     type: Literal["object"] = "object"
     field: Literal["dropdownlist"] = "dropdownlist"
+    class Config:
+        title = "Fusion Direction"
+
+class FusionConfigs(Configs):
+    fusionDirection: ConfigFusionDirection
+
+class FusionInputs(Inputs):
+    inputImageOne: InputImageOne
+    inputImageTwo : InputImageTwo
+
+class FusionOutputs(Outputs):
+    outputImageOne: OutputImageOne
+    outputImageTwo : OutputImageTwo
+
+class FusionRequest(Request):
+    inputs: Optional[FusionInputs]
+    configs: FusionConfigs
 
     class Config:
-        title = "Keep Sides"
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+class FusionResponse(Response):
+    outputs: FusionOutputs
 
 
-class Degree(Config):
-    """
-        Positive angles specify counterclockwise rotation while negative angles indicate clockwise rotation.
-    """
-    name: Literal["Degree"] = "Degree"
-    value: int = Field(ge=-359.0, le=359.0,default=0)
-    type: Literal["number"] = "number"
-    field: Literal["textInput"] = "textInput"
-    placeHolder: Literal["[-359, 359]"] = "[-359, 359]"
+class FusionExecutor(Config):
+    name: Literal["Fusion"] = "Fusion"
+    value: Union[FusionRequest, FusionResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
 
     class Config:
-        title = "Angle"
+        title = "Fusion"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
 
+class LaplacianEdge(Config):
+    name: Literal["LaplacianEdge"] = "LaplacianEdge"
+    value: Literal["LaplacianEdge"] = "LaplacianEdge"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+    class Config:
+        title = "Laplacian"
 
-class PackageInputs(Inputs):
-    inputImage: InputImage
+class SobelEdge(Config):
+    name: Literal["SobelEdge"] = "SobelEdge"
+    value: Literal["SobelEdge"] = "SobelEdge"
+    type: Literal["string"] = "string"
+    field: Literal["option"] = "option"
+    class Config:
+        title = "Sobel (Standard)"
 
+class ConfigEdgeType(Config):
+    """
+        Selects the algorithm for edge detection.
+    """
+    name: Literal["EdgeType"] = "EdgeType"
+    value: Union[LaplacianEdge, SobelEdge]
+    type: Literal["object"] = "object"
+    field: Literal["dropdownlist"] = "dropdownlist"
+    class Config:
+        title = "Edge Algorithm"
 
-class PackageConfigs(Configs):
-    degree: Degree
-    drawBBox: KeepSideBBox
+class EdgeConfigs(Configs):
+    edgeType: ConfigEdgeType
 
+class EdgeInputs(Inputs):
+    inputImage : InputImageOne
 
-class PackageOutputs(Outputs):
-    outputImage: OutputImage
+class EdgeOutputs(Outputs):
+    outputImage: OutputImageOne
 
-
-class PackageRequest(Request):
-    inputs: Optional[PackageInputs]
-    configs: PackageConfigs
+class EdgeRequest(Request):
+    inputs: Optional[EdgeInputs]
+    configs: EdgeConfigs
 
     class Config:
         json_schema_extra = {
@@ -108,36 +178,31 @@ class PackageRequest(Request):
         }
 
 
-class PackageResponse(Response):
-    outputs: PackageOutputs
+class EdgeResponse(Response):
+    outputs: EdgeOutputs
 
-
-class PackageExecutor(Config):
-    name: Literal["Package"] = "Package"
-    value: Union[PackageRequest, PackageResponse]
+class EdgeExecutor(Config):
+    name: Literal["Edge"] = "Edge"
+    value: Union[EdgeRequest, EdgeResponse]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Package"
+        title = "Edge"
         json_schema_extra = {
             "target": {
                 "value": 0
             }
         }
 
-
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-    value: Union[PackageExecutor]
+    value: Union[EdgeExecutor,FusionExecutor]
     type: Literal["executor"] = "executor"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
 
     class Config:
-        title = "Task"
-        json_schema_extra = {
-            "target": "value"
-        }
+        title = "Type"
 
 
 class PackageConfigs(Configs):
