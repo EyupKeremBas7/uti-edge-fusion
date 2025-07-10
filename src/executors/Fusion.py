@@ -12,7 +12,7 @@ from components.EdgeFusion.src.utils.response import build_response_fusion
 from components.EdgeFusion.src.models.PackageModel import PackageModel
 
 
-class FusionExecuter(Component):
+class Fusion(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
