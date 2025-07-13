@@ -138,7 +138,7 @@ class LaplacianEdge(Config):
     type: Literal["string"] = "string"
     field: Literal["option"] = "option"
     class Config:
-        title = "Laplacian"
+        title = "LaplacianEdge"
 
 class SobelEdge(Config):
     name: Literal["SobelEdge"] = "SobelEdge"
@@ -146,30 +146,30 @@ class SobelEdge(Config):
     type: Literal["string"] = "string"
     field: Literal["option"] = "option"
     class Config:
-        title = "Sobel (Standard)"
+        title = "SobelEdge"
 
 class ConfigEdgeType(Config):
     """
-        Selects the algorithm for edge detection.
+        Determines the algoritm of edging.
     """
     name: Literal["EdgeType"] = "EdgeType"
-    value: Union[LaplacianEdge, SobelEdge]
+    value: Union[SobelEdge, LaplacianEdge]
     type: Literal["object"] = "object"
     field: Literal["dropdownlist"] = "dropdownlist"
     class Config:
-        title = "Edge Algorithm"
+        title = "Edging Algorithm"
 
 class EdgeConfigs(Configs):
     edgeType: ConfigEdgeType
 
 class EdgeInputs(Inputs):
-    inputImageOne : InputImageOne
+    inputImageOne: InputImageOne
 
 class EdgeOutputs(Outputs):
     outputImageOne: OutputImageOne
 
 class EdgeRequest(Request):
-    inputs: Optional[EdgeInputs]
+    inputs: EdgeInputs
     configs: EdgeConfigs
 
     class Config:
@@ -177,13 +177,13 @@ class EdgeRequest(Request):
             "target": "configs"
         }
 
-
 class EdgeResponse(Response):
     outputs: EdgeOutputs
 
+
 class Edge(Config):
     name: Literal["Edge"] = "Edge"
-    value: Union[EdgeRequest, EdgeResponse]
+    value: Union[EdgeRequest,EdgeResponse]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
 
