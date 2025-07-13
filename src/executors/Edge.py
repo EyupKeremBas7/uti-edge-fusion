@@ -16,8 +16,8 @@ class Edge(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
-        self.edge_type = self.request.get_param("EdgeType")
-        self.image = self.request.get_param("inputImage")
+        self.edge_type = self.request.get_param("edgeType")
+        self.image = self.request.get_param("inputImageOne")
 
     @staticmethod
     def bootstrap(config: dict) -> dict:
@@ -33,8 +33,6 @@ class Edge(Component):
             sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=5)
             edges = cv2.magnitude(sobelx, sobely)
             edges = cv2.convertScaleAbs(edges)
-        else:
-            edges = cv2.Canny(image, 100, 200)
         
 
         return cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)

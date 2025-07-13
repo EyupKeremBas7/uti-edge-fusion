@@ -1,13 +1,13 @@
 from sdks.novavision.src.helper.package import PackageHelper
-from components.EdgeFusion.src.models.PackageModel import EdgeConfigs, EdgeExecutor, EdgeOutputs, EdgeResponse, EdgeExecutor
-from components.EdgeFusion.src.models.PackageModel import FusionExecutor, FusionOutputs, FusionResponse, FusionExecutor
+from components.EdgeFusion.src.models.PackageModel import Edge, EdgeOutputs, EdgeResponse
+from components.EdgeFusion.src.models.PackageModel import Fusion, FusionOutputs, FusionResponse
 from components.EdgeFusion.src.models.PackageModel import ConfigExecutor, OutputImageOne , OutputImageTwo , PackageModel,PackageConfigs
 
 def build_response_edge(context):
-    outputImage = OutputImageOne(value=context.image)
-    outputs = EdgeOutputs(outputImage=outputImage)
+    outputImageOne = OutputImageOne(value=context.image)
+    outputs = EdgeOutputs(outputImageOne=outputImageOne)
     edgeResponse = EdgeResponse(outputs=outputs)
-    edgeExecutor = EdgeExecutor(value=edgeResponse)
+    edgeExecutor = Edge(value=edgeResponse)
     executor = ConfigExecutor(value=edgeExecutor)
     packageConfigs = PackageConfigs(executor=executor)
     package = PackageHelper(packageModel=PackageModel, packageConfigs=packageConfigs)
@@ -19,7 +19,7 @@ def build_response_fusion(context):
     outputImageTwo = OutputImageTwo(value=context.image)
     outputs = FusionOutputs(outputImageOne=outputImageOne, outputImageTwo=outputImageTwo)
     fusionResponse = FusionResponse(outputs=outputs)
-    fusionExecutor = FusionExecutor(value=fusionResponse)
+    fusionExecutor = Fusion(value=fusionResponse)
     executor = ConfigExecutor(value=fusionExecutor)
     packageConfigs = PackageConfigs(executor=executor)
     package = PackageHelper(packageModel=PackageModel, packageConfigs=packageConfigs)

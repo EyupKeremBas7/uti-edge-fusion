@@ -118,7 +118,7 @@ class FusionResponse(Response):
     outputs: FusionOutputs
 
 
-class FusionExecutor(Config):
+class Fusion(Config):
     name: Literal["Fusion"] = "Fusion"
     value: Union[FusionRequest, FusionResponse]
     type: Literal["object"] = "object"
@@ -163,10 +163,10 @@ class EdgeConfigs(Configs):
     edgeType: ConfigEdgeType
 
 class EdgeInputs(Inputs):
-    inputImage : InputImageOne
+    inputImageOne : InputImageOne
 
 class EdgeOutputs(Outputs):
-    outputImage: OutputImageOne
+    outputImageOne: OutputImageOne
 
 class EdgeRequest(Request):
     inputs: Optional[EdgeInputs]
@@ -181,7 +181,7 @@ class EdgeRequest(Request):
 class EdgeResponse(Response):
     outputs: EdgeOutputs
 
-class EdgeExecutor(Config):
+class Edge(Config):
     name: Literal["Edge"] = "Edge"
     value: Union[EdgeRequest, EdgeResponse]
     type: Literal["object"] = "object"
@@ -197,7 +197,7 @@ class EdgeExecutor(Config):
 
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-    value: Union[EdgeExecutor,FusionExecutor]
+    value: Union[Edge,Fusion]
     type: Literal["executor"] = "executor"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
 
