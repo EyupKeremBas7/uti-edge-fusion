@@ -203,9 +203,7 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Type"
-        json_schema_extra = {
-            "target": "value"
-        }
+
 
 
 class PackageConfigs(Configs):
