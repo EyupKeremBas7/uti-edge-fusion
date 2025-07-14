@@ -152,7 +152,7 @@ class ConfigEdgeType(Config):
     """
         Determines the algoritm of edging.
     """
-    name: Literal["EdgeType"] = "EdgeType"
+    name: Literal["edgeType"] = "edgeType"
     value: Union[SobelEdge, LaplacianEdge]
     type: Literal["object"] = "object"
     field: Literal["dropdownlist"] = "dropdownlist"
@@ -169,7 +169,7 @@ class EdgeOutputs(Outputs):
     outputImageOne: OutputImageOne
 
 class EdgeRequest(Request):
-    inputs: EdgeInputs
+    inputs: Optional[EdgeInputs]
     configs: EdgeConfigs
 
     class Config:
@@ -203,6 +203,9 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Type"
+        json_schema_extra = {
+            "target": "value"
+        }
 
 
 class PackageConfigs(Configs):
