@@ -163,7 +163,7 @@ class EdgeInputs(Inputs):
     inputImageOne: InputImageOne
 
 class EdgeConfigs(Configs):
-    EdgeType: ConfigEdgeType
+    edgeType: ConfigEdgeType
 
 class EdgeOutputs(Outputs):
     outputImageOne: OutputImageOne
