@@ -23,19 +23,8 @@ class Edge(Component):
     def bootstrap(config: dict) -> dict:
         return {}
 
-    def edge(self, image: np.ndarray) -> np.ndarray:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        if self.edge_type == "LaplacianEdge":
-            edges = cv2.Laplacian(gray, cv2.CV_64F)
-            edges = cv2.convertScaleAbs(edges)
-        elif self.edge_type == "SobelEdge":
-            sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=5)
-            sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=5)
-            edges = cv2.magnitude(sobelx, sobely)
-            edges = cv2.convertScaleAbs(edges)
-        
-
-        return cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+    def edge(self, image):
+        return cv2.blur(image,(10,10))
 
 
     def run(self):
