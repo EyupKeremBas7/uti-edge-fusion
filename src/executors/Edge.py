@@ -16,11 +16,7 @@ class Edge(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
-        self.edge_type = self.request.get_param("edgeType")
-        print(f"Edge type raw: {self.edge_type}")
-        print(f"Edge type type: {type(self.edge_type)}")
-        if hasattr(self.edge_type, 'value'):
-            print(f"Edge type value: {self.edge_type.value}")
+        self.edge_type = self.request.get_param("EdgeType")
         self.image = self.request.get_param("inputImageOne")
 
     @staticmethod
