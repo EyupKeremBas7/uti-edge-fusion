@@ -16,26 +16,49 @@ class Edge(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
-        self.edge_type = self.request.get_param("EdgeType")
+        try:
+            self.edge_type = self.request.get_param("EdgeType")  # Try uppercase first
+        except:
+            self.edge_type = self.request.get_param("edgeType")  # Fallback to lowercase
         self.image = self.request.get_param("inputImageOne")
 
     @staticmethod
     def bootstrap(config: dict) -> dict:
         return {}
 
-    def edge(self, image: np.ndarray) -> np.ndarray:
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    def edge(self, image):
         if self.edge_type == "LaplacianEdge":
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image
             edges = cv2.Laplacian(gray, cv2.CV_64F)
-            edges = cv2.convertScaleAbs(edges)
+            edges = np.uint8(np.absolute(edges))
+            if len(image.shape) == 3:
+                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+            return edges
         elif self.edge_type == "SobelEdge":
-            sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=5)
-            sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=5)
-            edges = cv2.magnitude(sobelx, sobely)
-            edges = cv2.convertScaleAbs(edges)
-        
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image
 
-        return cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+            sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+            sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+            edges = np.sqrt(sobelx**2 + sobely**2)
+            edges = np.uint8(edges)
+            if len(image.shape) == 3:
+                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+            return edges
+        else:
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image
+            edges = cv2.Canny(gray, 100, 200)
+            if len(image.shape) == 3:
+                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+            return edges
 
 
     def run(self):

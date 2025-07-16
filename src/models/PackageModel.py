@@ -202,10 +202,6 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Type"
-<<<<<<< HEAD
-=======
-
->>>>>>> 940b2e852c83b8adc739ef8097965415b2a04c4b
 
 
 class PackageConfigs(Configs):
