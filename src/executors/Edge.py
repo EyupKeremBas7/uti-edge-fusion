@@ -16,10 +16,7 @@ class Edge(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
-        try:
-            self.edge_type = self.request.get_param("EdgeType")  # Try uppercase first
-        except:
-            self.edge_type = self.request.get_param("edgeType")  # Fallback to lowercase
+        self.edge_type = self.request.get_param("edgeType")
         self.image = self.request.get_param("inputImageOne")
 
     @staticmethod
@@ -27,38 +24,34 @@ class Edge(Component):
         return {}
 
     def edge(self, image):
+        image_copy = image.copy()
+        
         if self.edge_type == "LaplacianEdge":
-            if len(image.shape) == 3:
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            if len(image_copy.shape) == 3:
+                gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
             else:
-                gray = image
-            edges = cv2.Laplacian(gray, cv2.CV_64F)
-            edges = np.uint8(np.absolute(edges))
-            if len(image.shape) == 3:
+                gray = image_copy.copy()
+            edges = cv2.Laplacian(gray, ddepth=-1, ksize=3)
+            if len(image_copy.shape) == 3:
                 edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
             return edges
+            
         elif self.edge_type == "SobelEdge":
-            if len(image.shape) == 3:
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            if len(image_copy.shape) == 3:
+                gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
             else:
-                gray = image
-
-            sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
-            sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
-            edges = np.sqrt(sobelx**2 + sobely**2)
-            edges = np.uint8(edges)
-            if len(image.shape) == 3:
-                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
-            return edges
+                gray = image_copy.copy()
+            sobelx = cv2.Sobel(gray, ddepth=-1, dx=1, dy=0, ksize=3)
+            sobely = cv2.Sobel(gray, ddepth=-1, dx=0, dy=1, ksize=3)
+            magnitude = cv2.magnitude(sobelx.astype(float), sobely.astype(float))
+            magnitude = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX)
+            magnitude = np.uint8(magnitude)
+            if len(image_copy.shape) == 3:
+                magnitude = cv2.cvtColor(magnitude, cv2.COLOR_GRAY2BGR)
+            return magnitude
+            
         else:
-            if len(image.shape) == 3:
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            else:
-                gray = image
-            edges = cv2.Canny(gray, 100, 200)
-            if len(image.shape) == 3:
-                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
-            return edges
+            return image_copy
 
 
     def run(self):
