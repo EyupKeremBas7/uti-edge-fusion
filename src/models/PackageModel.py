@@ -152,7 +152,7 @@ class ConfigEdgeType(Config):
     """
         Determines the algoritm of edging.
     """
-    name: Literal["EdgeType"] = "EdgeType"
+    name: Literal["edgeType"] = "edgeType"
     value: Union[SobelEdge, LaplacianEdge]
     type: Literal["object"] = "object"
     field: Literal["dropdownlist"] = "dropdownlist"
