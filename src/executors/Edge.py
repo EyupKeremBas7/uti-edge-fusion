@@ -16,10 +16,7 @@ class Edge(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
-        try:
-            self.edge_type = self.request.get_param("EdgeType")  # Try uppercase first
-        except:
-            self.edge_type = self.request.get_param("edgeType")  # Fallback to lowercase
+        self.edge_type = self.request.get_param("edgeType")
         self.image = self.request.get_param("inputImageOne")
 
     @staticmethod
@@ -27,7 +24,34 @@ class Edge(Component):
         return {}
 
     def edge(self, image):
-        return cv2.blur(image,(10,10))
+        image_copy = image.copy()
+        
+        if self.edge_type == "LaplacianEdge":
+            if len(image_copy.shape) == 3:
+                gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image_copy.copy()
+            edges = cv2.Laplacian(gray, ddepth=-1, ksize=3)
+            if len(image_copy.shape) == 3:
+                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+            return edges
+            
+        elif self.edge_type == "SobelEdge":
+            if len(image_copy.shape) == 3:
+                gray = cv2.cvtColor(image_copy, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image_copy.copy()
+            sobelx = cv2.Sobel(gray, ddepth=-1, dx=1, dy=0, ksize=3)
+            sobely = cv2.Sobel(gray, ddepth=-1, dx=0, dy=1, ksize=3)
+            magnitude = cv2.magnitude(sobelx.astype(float), sobely.astype(float))
+            magnitude = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX)
+            magnitude = np.uint8(magnitude)
+            if len(image_copy.shape) == 3:
+                magnitude = cv2.cvtColor(magnitude, cv2.COLOR_GRAY2BGR)
+            return magnitude
+            
+        else:
+            return image_copy
 
 
     def run(self):
