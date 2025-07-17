@@ -27,38 +27,7 @@ class Edge(Component):
         return {}
 
     def edge(self, image):
-        if self.edge_type == "LaplacianEdge":
-            if len(image.shape) == 3:
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            else:
-                gray = image
-            edges = cv2.Laplacian(gray, cv2.CV_64F)
-            edges = np.uint8(np.absolute(edges))
-            if len(image.shape) == 3:
-                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
-            return edges
-        elif self.edge_type == "SobelEdge":
-            if len(image.shape) == 3:
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            else:
-                gray = image
-
-            sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
-            sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
-            edges = np.sqrt(sobelx**2 + sobely**2)
-            edges = np.uint8(edges)
-            if len(image.shape) == 3:
-                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
-            return edges
-        else:
-            if len(image.shape) == 3:
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            else:
-                gray = image
-            edges = cv2.Canny(gray, 100, 200)
-            if len(image.shape) == 3:
-                edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
-            return edges
+        return cv2.blur(image,(10,10))
 
 
     def run(self):
