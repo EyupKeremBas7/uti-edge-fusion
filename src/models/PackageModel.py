@@ -204,7 +204,7 @@ class OutputDetections(Output):
 
     class Config:
         title = "Detections"
-        
+
 class RecognitionInputs(Inputs):
     inputImageOne: InputImageOne
 
@@ -212,10 +212,24 @@ class RecognitionInputs(Inputs):
 class RecognitionOutputs(Outputs):
     outputDetections: OutputDetections
 
+class Number(Config):
+    name: Literal["Number"] = "Number"
+    value: int = Field(ge=0.0, le=0.0,default=0)
+    type: Literal["number"] = "number"
+    field: Literal["textInput"] = "textInput"
+    class Config:
+        title = "Number"
+
+class RecognitionConfigs(Configs):
+    number : Number
 
 class RecognitionRequest(Request):
     inputs: Optional[RecognitionInputs]
-
+    configs: RecognitionConfigs
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
 
 class RecognitionResponse(Response):
     outputs: RecognitionOutputs
