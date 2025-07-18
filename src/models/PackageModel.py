@@ -214,7 +214,7 @@ class RecognitionOutputs(Outputs):
 
 class Number(Config):
     name: Literal["Number"] = "Number"
-    value: int = Field(ge=5.0, le=0.0,default=0)
+    value: int = Field(ge=0.0, le=5.0,default=0)
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
     class Config:
