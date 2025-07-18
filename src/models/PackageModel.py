@@ -204,10 +204,7 @@ class OutputDetections(Output):
 
     class Config:
         title = "Detections"
-
-class RecognitionConfigs(Configs):
-    pass
-
+        
 class RecognitionInputs(Inputs):
     inputImageOne: InputImageOne
 
