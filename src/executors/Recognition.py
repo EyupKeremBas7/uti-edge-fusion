@@ -24,7 +24,7 @@ class Recognition(Component):
         sayac = 0
         return {"sayac":sayac}
 
-    def recognition(self, image_one: np.ndarray, image_two: np.ndarray) -> np.ndarray:
+    def recognition(self, image_one):
         pass
 
     def run(self):
