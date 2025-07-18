@@ -219,7 +219,6 @@ class RecognitionOutputs(Outputs):
 
 class RecognitionRequest(Request):
     inputs: Optional[RecognitionInputs]
-    configs: EdgeConfigs
     class Config:
         json_schema_extra = {
             "target": "configs"
