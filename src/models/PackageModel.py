@@ -208,7 +208,7 @@ class OutputDetections(Output):
 class RecognitionConfigs(Configs):
     pass
 
-class RecognitionInputs(Input):
+class RecognitionInputs(Inputs):
     inputImageOne: InputImageOne
 
 
