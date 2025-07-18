@@ -216,16 +216,9 @@ class RecognitionOutputs(Outputs):
     outputDetections: OutputDetections
 
 
-class RecognitionConfigs():
-    pass
-
 class RecognitionRequest(Request):
     inputs: Optional[RecognitionInputs]
-    configs: RecognitionConfigs
-    class Config:
-        json_schema_extra = {
-            "target": "configs"
-        }
+
 
 class RecognitionResponse(Response):
     outputs: RecognitionOutputs
