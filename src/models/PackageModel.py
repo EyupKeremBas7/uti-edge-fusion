@@ -235,7 +235,7 @@ class Recognition(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Edge"
+        title = "Recognition"
         json_schema_extra = {
             "target": {
                 "value": 0
