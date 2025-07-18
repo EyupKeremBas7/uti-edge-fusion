@@ -208,7 +208,7 @@ class OutputDetections(Output):
 class RecognitionConfigs(Configs):
     pass
 
-class RecognitionInputs():
+class RecognitionInputs(Input):
     inputImageOne: InputImageOne
 
 
@@ -217,7 +217,7 @@ class RecognitionOutputs(Outputs):
 
 
 
-class RecognitionRequest():
+class RecognitionRequest(Request):
     inputs: Optional[RecognitionInputs]
     configs: EdgeConfigs
     class Config:
@@ -225,7 +225,7 @@ class RecognitionRequest():
             "target": "configs"
         }
 
-class RecognitionResponse():
+class RecognitionResponse(Response):
     outputs: RecognitionOutputs
 
 class Recognition(Config):
