@@ -21,8 +21,8 @@ class Recognition(Component):
 
     @staticmethod
     def bootstrap(config: dict) -> dict:
-        model = 0
-        return model
+        sayac = 0
+        return {"sayac":sayac}
 
     def recognition(self, image_one: np.ndarray, image_two: np.ndarray) -> np.ndarray:
         pass
@@ -32,6 +32,8 @@ class Recognition(Component):
         img1.value = self.recognition(img1.value)
         self.image = Image.set_frame(img=img1, package_uID=self.uID, redis_db=self.redis_db)
         packageModel = build_response_recognition(context=self)
+        self.bootsrap["sayac"] += 1
+        print(self.bootsrap["sayac"])
         return packageModel
     
 if "__main__" == __name__:
