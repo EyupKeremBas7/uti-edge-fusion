@@ -1,6 +1,6 @@
 from pydantic import Field, validator
 from typing import List, Optional, Union, Literal
-from sdks.novavision.src.base.model import Package, Image, Inputs, Configs, Outputs, Response, Request, Output, Input, Config
+from sdks.novavision.src.base.model import Package, Image, Inputs, Configs, Outputs, Response, Request, Output, Input, Config,Detection
 
 class InputImageOne(Input):
     name: Literal["inputImageOne"] = "inputImageOne"
@@ -194,15 +194,64 @@ class Edge(Config):
             }
         }
 
+class CustomDetection(Detection):
+    imgUID: str
+
+class OutputDetections(Output):
+    name: Literal["outputDetections"] = "outputDetections"
+    value: List[CustomDetection]
+    type: Literal["list"] = "list"
+
+    class Config:
+        title = "Detections"
+
+class RecognitionConfigs(Configs):
+    pass
+
+class RecognitionInputs():
+    inputImageOne: InputImageOne
+
+
+class RecognitionOutputs(Outputs):
+    outputDetections: OutputDetections
+
+
+
+class RecognitionRequest():
+    inputs: Optional[RecognitionInputs]
+    configs: EdgeConfigs
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+class RecognitionResponse():
+    outputs: RecognitionOutputs
+
+class Recognition(Config):
+    name: Literal["Recognition"] = "Recognition"
+    value: Union[RecognitionRequest,RecognitionResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Edge"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
+
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-    value: Union[Edge,Fusion]
+    value: Union[Edge,Fusion,Recognition]
     type: Literal["executor"] = "executor"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
 
     class Config:
         title = "Type"
 
+    
 
 class PackageConfigs(Configs):
     executor: ConfigExecutor
